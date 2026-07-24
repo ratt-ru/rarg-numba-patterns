@@ -15,7 +15,7 @@ Added
 
 - ``store_data`` intrinsic, the write counterpart of ``load_data``, which stores
   a tuple of values into an array at a given axis and index using plain
-  assignment.
+  assignment (:pr:`2`)
 
 0.0.1
 =====
