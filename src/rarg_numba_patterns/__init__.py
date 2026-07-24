@@ -9,6 +9,7 @@ from rarg_numba_patterns.intrinsics import (
   overload_atomic_rmw,
   overload_field_ptr,
   overload_item_ptr,
+  store_data,
 )
 from rarg_numba_patterns.literals import (
   BooleanDatumLiteral,
@@ -41,6 +42,7 @@ __all__ = [
   "overload_item_ptr",
   "Schema",
   "SchemaLiteral",
+  "store_data",
   "StringDatumLiteral",
 ]
 
