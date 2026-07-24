@@ -1,7 +1,7 @@
 import numba
 import numpy as np
 
-from rarg_numba_patterns.intrinsics import accumulate_data, load_data
+from rarg_numba_patterns.intrinsics import accumulate_data, load_data, store_data
 
 
 def test_load_data():
@@ -15,6 +15,38 @@ def test_load_data():
 
   for i in range(shape[0]):
     assert load(data, i) == tuple(i * shape[1] + j for j in range(shape[1]))
+
+
+def test_store_data():
+  shape = (5, 4)
+
+  @numba.njit
+  def store(d, a, i):
+    return store_data(d, a, (i,), -1)
+
+  data = np.zeros(shape)
+
+  for i in range(shape[0]):
+    # Storing twice overwrites (unlike accumulate, which sums).
+    store((i,) * shape[1], data, i)
+    store((i,) * shape[1], data, i)
+
+  assert np.all(np.broadcast_to(np.arange(shape[0])[:, None], shape) == data)
+
+
+def test_store_load_round_trip():
+  shape = (5, 4)
+
+  @numba.njit
+  def round_trip(d, a, i):
+    store_data(d, a, (i,), -1)
+    return load_data(a, (i,), shape[1], -1)
+
+  data = np.zeros(shape)
+
+  for i in range(shape[0]):
+    row = tuple(float(i * shape[1] + j) for j in range(shape[1]))
+    assert round_trip(row, data, i) == row
 
 
 def test_accumulate_data():
