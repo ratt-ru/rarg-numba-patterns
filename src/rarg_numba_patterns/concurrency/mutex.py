@@ -110,8 +110,7 @@ def lock_int_op(typingctx, lock: types.CPointer, operation: types.StringLiteral)
     "unlock",
   }:
     raise RequireLiteralValue(
-      f"'operation' {operation} must be a StringLiteral "
-      f"set to either lock or unlock"
+      f"'operation' {operation} must be a StringLiteral set to either lock or unlock"
     )
 
   if not (isinstance(lock, types.CPointer) and isinstance(lock.dtype, types.Integer)):
@@ -137,8 +136,7 @@ def lock_array_op(
     "unlock",
   }:
     raise RequireLiteralValue(
-      f"'operation' {operation} must be a StringLiteral "
-      f"set to either lock or unlock"
+      f"'operation' {operation} must be a StringLiteral set to either lock or unlock"
     )
 
   if not isinstance(lock, types.Array) or not isinstance(lock.dtype, types.Integer):

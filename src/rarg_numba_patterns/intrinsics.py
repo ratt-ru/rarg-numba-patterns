@@ -1,4 +1,4 @@
-from typing import Callable, Tuple
+from collections.abc import Callable
 
 from llvmlite import ir
 from numba.core import cgutils, types
@@ -14,7 +14,7 @@ def load_data(
   index: types.UniTuple,
   ndata: types.IntegerLiteral,
   axis: types.IntegerLiteral,
-) -> Tuple[Signature, Callable]:
+) -> tuple[Signature, Callable]:
   """An intrinsic that retrieves an `ndata` tuple of values
   from an array at a given `axis` and `index`:
 
@@ -73,7 +73,7 @@ def store_data(
   array: types.Array,
   index: types.UniTuple,
   axis: types.IntegerLiteral,
-) -> Tuple[Signature, Callable]:
+) -> tuple[Signature, Callable]:
   """An intrinsic that stores a `data` tuple of values
   into an array at a given `axis` and `index`:
 
@@ -122,8 +122,6 @@ def store_data(
     for p in range(len(data_type)):
       context.compile_internal(builder, assign_factory(p), sig, [data, array, index])
 
-    return None
-
   return sig, codegen
 
 
@@ -134,7 +132,7 @@ def accumulate_data(
   array: types.Array,
   index: types.UniTuple,
   axis: types.IntegerLiteral,
-) -> Tuple[Signature, Callable]:
+) -> tuple[Signature, Callable]:
   """An intrinsic that accumulates a `data` tuple of values
   into an array at a given `axis` and `index`:
 
@@ -180,8 +178,6 @@ def accumulate_data(
 
     for p in range(len(data_type)):
       context.compile_internal(builder, assign_factory(p), sig, [data, array, index])
-
-    return None
 
   return sig, codegen
 
