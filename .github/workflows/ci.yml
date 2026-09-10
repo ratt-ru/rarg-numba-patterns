@@ -6,6 +6,11 @@ on:
   schedule: [{ cron: '30 2 * * 1,4' }]  # Every Monday and Thursday @ 2h30am UTC
 
 jobs:
+  pre-commit:
+    uses: ratt-ru/rarg-gh-workflows/.github/workflows/precommit.yml@main
+    with:
+      python-version: '3.13'  # Match [tool.mypy] python_version
+
   test:
     uses: ratt-ru/rarg-gh-workflows/.github/workflows/python-ci.yml@main
     with:
@@ -13,7 +18,7 @@ jobs:
       install-command: 'pip install --group test .'
 
   deploy:
-    needs: ["test"]
+    needs: ["pre-commit", "test"]
     runs-on: ubuntu-latest
     environment:
       name: pypi
