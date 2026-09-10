@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Generic, Hashable, Tuple, TypeVar
+from collections.abc import Callable, Hashable
+from typing import Any, Generic, TypeVar
 
 from numba.core import types
 from numba.core.datamodel.models import OpaqueModel, register_default
@@ -16,8 +17,6 @@ class Schema(tuple):
 
   This creates a unique type that numba can pass as a
   literal argument within numba functions"""
-
-  pass
 
 
 class SchemaLiteral(types.Literal, types.Dummy):
@@ -56,7 +55,7 @@ H = TypeVar("H", bound=Hashable)
 class Datum(Generic[H]):
   """A simple class holding an immutable value of any hashable type"""
 
-  __slots__ = ("value", "hashvalue")
+  __slots__ = ("hashvalue", "value")
 
   value: H
 
@@ -75,7 +74,7 @@ class Datum(Generic[H]):
   def __hash__(self) -> int:
     return self.hashvalue
 
-  def __reduce__(self) -> Tuple[Callable[[Datum], Any], Any]:
+  def __reduce__(self) -> tuple[Callable[[Datum], Any], Any]:
     return (Datum, (self.value,))
 
   def __str__(self) -> str:
@@ -85,7 +84,7 @@ class Datum(Generic[H]):
     return repr(self.value)
 
 
-class DatumLiteral(Generic[H], types.Literal, types.Dummy):
+class DatumLiteral(types.Literal, types.Dummy, Generic[H]):
   """Numba literal type holding an arbitrary object"""
 
   def __init__(self, value: H):

@@ -4,13 +4,18 @@ from functools import reduce
 
 import numba
 import pytest
+from conftest import _init_numba_cache_debugging_with_capture
 from llvmlite import ir
 from numba.core.errors import RequireLiteralValue
 from numba.experimental import structref
 from numba.extending import intrinsic, overload, overload_method
 
-from rarg_numba_patterns.literals import Datum, DatumLiteral, LiteralStructRef, is_datum_literal
-from conftest import _init_numba_cache_debugging_with_capture
+from rarg_numba_patterns.literals import (
+  Datum,
+  DatumLiteral,
+  LiteralStructRef,
+  is_datum_literal,
+)
 
 
 def test_is_datum_literal():
@@ -154,7 +159,9 @@ def test_datum_argument_vs_capture_bool():
 
   @numba.njit
   def passed_as_arg(x):
-    return x or not x
+    # `x or not x` is the expression under test: it exercises numba's lowering
+    # of a Datum[bool] literal, so it must not be folded to `True`.
+    return x or not x  # noqa: SIM221
 
   assert passed_as_arg(false) is _closure(false)() is True
   assert passed_as_arg(true) is _closure(true)() is True

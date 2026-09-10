@@ -34,8 +34,12 @@ indent-width = 2
 extend-select = ["I"]  # import sorting
 
 [tool.mypy]
-python_version = "3.10"
-strict = true
+# 3.13, not the 3.10 floor in requires-python: numpy's stubs use `type`
+# statements, which mypy only parses under --python-version >= 3.12.
+python_version = "3.13"
+# Not strict: numba's @intrinsic / @overload_method / @njit decorators are
+# untyped, so strict mode flags every decorated function and every lowering
+# closure. Matches ratt-ru/radiomesh, the other numba repo in the org.
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
