@@ -34,6 +34,10 @@ Fixed
   passed. ``python_version`` was pinned below the 3.12 that numpy's stubs
   require, and the hook resolved none of the project's dependencies, leaving
   every numpy symbol as ``Any`` (:pr:`4`)
+- ``load_data``, ``store_data`` and ``accumulate_data`` read and wrote the
+  wrong elements for ``axis=-1`` when the data tuple was shorter than the
+  index. Negative axes are now counted from the end of the array, and
+  out-of-range axes raise a ``TypingError`` (:pr:`7`)
 
 0.0.2
 =====
