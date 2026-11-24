@@ -7,6 +7,15 @@ from numba.core.typing.templates import Signature
 from numba.extending import intrinsic, overload_method
 
 
+def _normalise_axis(array: types.Array, axis: types.IntegerLiteral) -> int:
+  """Normalise a possibly negative `axis` of `array`"""
+  ax = axis.literal_value
+  ax = ax + array.ndim if ax < 0 else ax
+  if not 0 <= ax < array.ndim:
+    raise TypingError(f"'axis' ({axis.literal_value}) is out of range for {array}")
+  return ax
+
+
 @intrinsic(prefer_literal=True)
 def load_data(
   typingctx,
@@ -44,7 +53,7 @@ def load_data(
 
   return_type = types.Tuple([array.dtype] * ndata.literal_value)
   sig = return_type(array, index, ndata, axis)
-  ax = ndata.literal_value if axis.literal_value < 0 else axis.literal_value
+  ax = _normalise_axis(array, axis)
 
   def index_factory(pol):
     """Index array with the first N-1 indices combined with pol"""
@@ -103,8 +112,7 @@ def store_data(
     raise TypingError(f"'index' {index} must be a tuple of integers")
 
   sig = types.none(data, array, index, axis)
-  # -1 signifies the axis should be at the end of the tuple
-  ax = len(data) if axis.literal_value < 0 else axis.literal_value
+  ax = _normalise_axis(array, axis)
 
   def assign_factory(pol):
     """Index array with the N-1 indices combined with pol"""
@@ -160,8 +168,7 @@ def accumulate_data(
     raise TypingError(f"'index' {index} must be a tuple of integers")
 
   sig = types.none(data, array, index, axis)
-  # -1 signifies the axis should be at the end of the tuple
-  ax = len(data) if axis.literal_value < 0 else axis.literal_value
+  ax = _normalise_axis(array, axis)
 
   def assign_factory(pol):
     """Index array with the N-1 indices combined with pol"""
