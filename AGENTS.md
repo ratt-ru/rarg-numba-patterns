@@ -21,6 +21,13 @@ types, and atomic-lock primitives shared across RARG codebases.
   `IntegerDatumLiteral`, `FloatDatumLiteral` and `StringDatumLiteral`, with
   `lower_cast` to native constants), and
   `LiteralStructRef`, a `StructRef` that specialises on its literal-typed fields.
+- [`host.py`](src/rarg_numba_patterns/host.py): `HostDescription` and
+  `detect_host()`, the vector width and power-of-two cache sizes of the CPU a
+  kernel runs on.
+- [`kernels.py`](src/rarg_numba_patterns/kernels.py): `KernelConfiguration`, the
+  base for a kernel's single compile-time configuration (passed as a `Datum`),
+  `configuration()` to read it in an `@overload`, and `threads()` to set numba's
+  thread count around a parallel call.
 - [`concurrency/mutex.py`](src/rarg_numba_patterns/concurrency/mutex.py):
   `atomic_lock`, `lock_int_op` and `lock_array_op`, cmpxchg-based spinlocks that
   call the OS yield function (`sched_yield` / `SwitchToThread`). This module is
@@ -43,6 +50,9 @@ gotchas; follow them:
 - Test modules that put `assert` inside `@njit` functions carry a
   `PYTEST_DONT_REWRITE` docstring so pytest doesn't rewrite asserts inside numba
   code (see [`test_pointers.py`](tests/test_pointers.py)).
+- A cached `@njit` function that calls `numba.get_thread_id()` outside a
+  `prange` segfaults when loaded from cache, since nothing has launched the
+  threading layer (numba 0.68.1). Only call it inside parallel regions.
 - Numba cache-debugging env vars must be set **before** numba is imported (see
   `_init_numba_cache_debugging_with_capture` in [`conftest.py`](tests/conftest.py)).
 
