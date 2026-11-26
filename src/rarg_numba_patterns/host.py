@@ -182,7 +182,7 @@ def _linux_caches(
 
 def _sysctl(name: str) -> int | None:
   out = subprocess.run(
-    ["sysctl", "-n", name], capture_output=True, text=True, timeout=5
+    ["sysctl", "-n", name], capture_output=True, text=True, timeout=5, check=False
   )
   value = out.stdout.strip()
   return int(value) if out.returncode == 0 and value.isdigit() else None

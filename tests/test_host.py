@@ -115,7 +115,9 @@ def test_linux_caches_follows_affinity(hybrid_sysfs):
 
 
 def test_linux_caches_without_l3(tmp_path):
-  _write_cpu(tmp_path, 0, core=0, caches=[(1, "Data", "32K", "0"), (2, "Unified", "1M", "0")])
+  _write_cpu(
+    tmp_path, 0, core=0, caches=[(1, "Data", "32K", "0"), (2, "Unified", "1M", "0")]
+  )
   assert _linux_caches(tmp_path, (0,)) == (32 * KB, MB, None, None)
 
 

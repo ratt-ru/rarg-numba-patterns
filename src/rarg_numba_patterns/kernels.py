@@ -68,9 +68,7 @@ def configuration(config: object, cls: type[C]) -> C:
     TypingError: unless ``config`` is a ``DatumLiteral`` wrapping an instance of
       ``cls``.
   """
-  if not isinstance(config, DatumLiteral) or not isinstance(
-    config.literal_value, cls
-  ):
+  if not isinstance(config, DatumLiteral) or not isinstance(config.literal_value, cls):
     raise TypingError(
       f"the kernel configuration must be a Datum wrapping a {cls.__qualname__}, "
       f"got {config}"

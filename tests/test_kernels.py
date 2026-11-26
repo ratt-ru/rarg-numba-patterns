@@ -137,7 +137,9 @@ def test_configuration_rejects_a_non_literal():
 def test_kernel_rejects_a_wrong_configuration(x):
   host = detect_host()
   with pytest.raises(TypingError, match="ScaleConfiguration"):
-    _scale(x, np.empty_like(x), np.empty(256, np.int64), Datum(OtherConfiguration(host=host)))
+    _scale(
+      x, np.empty_like(x), np.empty(256, np.int64), Datum(OtherConfiguration(host=host))
+    )
 
 
 def test_configuration_type_name_is_module_qualified():
@@ -172,7 +174,9 @@ HOST_A = HostDescription(simd_bytes=32, l1d=32768, l2=1 << 20, l3=1 << 20)
 HOST_B = HostDescription(simd_bytes=32, l1d=32768, l2=1 << 20, l3=1 << 21)
 
 
-@pytest.mark.parametrize("hosts,saved,loaded", [((HOST_A, HOST_A), 1, 1), ((HOST_A, HOST_B), 2, 0)])
+@pytest.mark.parametrize(
+  "hosts,saved,loaded", [((HOST_A, HOST_A), 1, 1), ((HOST_A, HOST_B), 2, 0)]
+)
 def test_host_description_is_part_of_the_cache_key(tmp_path, hosts, saved, loaded):
   stdout_f = tmp_path / "stdout.txt"
   stderr_f = tmp_path / "stderr.txt"
