@@ -20,10 +20,11 @@ Added
   vector width, and per-core and total cache sizes rounded down to powers of
   two. Carried in a kernel's configuration, they let it derive block sizes as
   compile-time constants, and each distinct host compiles and caches separately
+  (:pr:`8`)
 - ``KernelConfiguration``, a frozen dataclass base for a kernel's compile-time
   configuration passed as a ``Datum``, with ``configuration()`` to read it in an
   ``@overload`` and ``threads()`` to set numba's thread count around a parallel
-  call
+  call (:pr:`8`)
 
 Changed
 -------
