@@ -16,6 +16,14 @@ Added
 - The pre-commit hooks now run in CI, through the reusable ``precommit.yml``
   workflow. ``deploy`` gates on them alongside the test suite, so a tagged
   release cannot publish with the lint and type gate red (:pr:`4`)
+- ``HostDescription`` and ``detect_host()`` describe the CPU a kernel runs on:
+  vector width, and per-core and total cache sizes rounded down to powers of
+  two. Carried in a kernel's configuration, they let it derive block sizes as
+  compile-time constants, and each distinct host compiles and caches separately
+- ``KernelConfiguration``, a frozen dataclass base for a kernel's compile-time
+  configuration passed as a ``Datum``, with ``configuration()`` to read it in an
+  ``@overload`` and ``threads()`` to set numba's thread count around a parallel
+  call
 
 Changed
 -------
